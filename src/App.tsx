@@ -1,25 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { RecoilRoot } from "recoil";
+import { WiDaySunnyOvercast } from "react-icons/wi";
+
+import "./App.css";
+import { Tile } from "./hex/Tile";
+import { cubeCoordToPixel, neighbors, ring } from "./hex/coords";
 
 function App() {
+  const scale = 40;
+  const origin: [number, number, number] = [0, 0, 0];
+  const cells = [origin, ...neighbors(origin), ...ring(origin, 2)];
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <RecoilRoot>
+      <svg
+        width={400}
+        height={400}
+        viewBox="-200 -200 400 400"
+        style={{ border: "1px solid black" }}
+      >
+        {cells.map((coord) => {
+          const [cx, cy] = cubeCoordToPixel(coord, scale);
+          return (
+            <Tile cx={cx} cy={cy} r={scale - 2}>
+              <WiDaySunnyOvercast size={scale - 2} />
+            </Tile>
+          );
+        })}
+      </svg>
+    </RecoilRoot>
   );
 }
 
