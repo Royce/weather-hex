@@ -21,7 +21,7 @@ function App() {
         {cells.map((coord) => {
           const [cx, cy] = cubeCoordToPixel(coord, scale);
           return (
-            <Tile cx={cx} cy={cy} r={scale - 2}>
+            <Tile key={coord.toString()} cx={cx} cy={cy} r={scale - 2}>
               <WiDaySunnyOvercast size={scale - 2} />
             </Tile>
           );
