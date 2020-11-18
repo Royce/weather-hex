@@ -83,12 +83,17 @@ function ok({ temperature, wind, sky, water: waterList }: Weather): boolean {
   });
 }
 
-export function all() {
+function _all(constraints?: Partial<Omit<Weather, "water">>) {
   var list: Weather[] = [];
+  const temperatures = constraints?.temperature
+    ? [constraints?.temperature]
+    : temperatureScale;
+  const winds = constraints?.wind ? [constraints?.wind] : windScale;
+  const skies = constraints?.sky ? [constraints?.sky] : skyScale;
 
-  for (const temperature of temperatureScale) {
-    for (const wind of windScale) {
-      for (const sky of skyScale) {
+  for (const temperature of temperatures) {
+    for (const wind of winds) {
+      for (const sky of skies) {
         for (const water of exclusive) {
           const weather = { temperature, wind, sky, water: [water] };
           if (ok(weather)) list.push(weather);
@@ -106,4 +111,35 @@ export function all() {
   }
 
   return list;
+}
+
+export function all() {
+  return _all();
+}
+
+export function availableTemperatures(constraints: Partial<Weather> = {}) {
+  return _.chain(_all(_.omit(constraints, "temperature")))
+    .filter(({ water }) => {
+      return !constraints.water || _.isEmpty(_.xor(water, constraints.water));
+    })
+    .map("temperature")
+    .uniq()
+    .value();
+}
+
+export function availableWater(constraints: Partial<Weather> = {}) {
+  return _.chain(_all(_.omit(constraints, "water")))
+    .map("water")
+    .uniqWith(_.isEqual)
+    .value();
+}
+
+export function availableSkyAndWind(constraints: Partial<Weather> = {}) {
+  return _.chain(_all(_.omit(constraints, ["sky", "wind"])))
+    .filter(({ water }) => {
+      return !constraints.water || _.isEmpty(_.xor(water, constraints.water));
+    })
+    .map(({ sky, wind }) => ({ sky, wind }))
+    .uniqWith(_.isEqual)
+    .value();
 }

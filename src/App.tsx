@@ -1,17 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { RecoilRoot } from "recoil";
 import { WiDaySunnyOvercast } from "react-icons/wi";
 
 import "./App.css";
 import { Tile } from "./hex/Tile";
 import { cubeCoordToPixel, neighbors, ring } from "./hex/coords";
+import Picker from "./weather/Picker";
+import { Weather } from "./weather/options";
 
 function App() {
   const scale = 40;
   const origin: [number, number, number] = [0, 0, 0];
   const cells = [origin, ...neighbors(origin), ...ring(origin, 2)];
+
+  const [weather, setWeather] = useState<Partial<Weather>>({});
+
   return (
     <RecoilRoot>
+      <Picker weather={weather} setWeather={setWeather} />
+
       <svg
         width={400}
         height={400}
