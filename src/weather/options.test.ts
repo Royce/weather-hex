@@ -17,13 +17,12 @@ test("generate all useful weather permutations", () => {
   expect(options).toMatchSnapshot();
 });
 
-test("restrict available temperatures (humid)", () => {
-  const available = availableTemperatures({ water: ["humid"] });
+test("restrict available temperatures (fog)", () => {
+  const available = availableTemperatures({ water: ["fog"] });
 
   expect(available).toMatchInlineSnapshot(`
     Array [
-      "hot",
-      "warm",
+      "cool",
     ]
   `);
 });
@@ -63,9 +62,7 @@ test("restrict available water (hot)", () => {
   expect(available).toMatchInlineSnapshot(`
     Array [
       "dry",
-      "humid",
       "light rain",
-      "light rain, humid",
     ]
   `);
 });
@@ -79,8 +76,6 @@ test("restrict available water (clear/calm)", () => {
     Array [
       "dry",
       "fog",
-      "frost",
-      "humid",
     ]
   `);
 });
@@ -93,9 +88,7 @@ test("restrict available water (freezing)", () => {
   expect(available).toMatchInlineSnapshot(`
     Array [
       "dry",
-      "frost",
       "hail",
-      "hail, frost",
       "heavy snowfall",
       "light snowfall",
     ]

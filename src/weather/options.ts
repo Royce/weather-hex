@@ -18,9 +18,7 @@ export type Water =
   | "light snowfall"
   | "heavy snowfall"
   | "lightning"
-  | "frost"
   | "fog"
-  | "humid"
   | "dry";
 const waterList: Water[] = [
   "light rain",
@@ -29,9 +27,7 @@ const waterList: Water[] = [
   "light snowfall",
   "heavy snowfall",
   "lightning",
-  "frost",
   "fog",
-  "humid",
   "dry",
 ];
 
@@ -41,8 +37,6 @@ const requires: { [K in Water]?: WeatherValue[] } = {
   hail: ["cool", "freezing"],
   "light snowfall": ["freezing"],
   "heavy snowfall": ["freezing"],
-  humid: ["hot", "warm"],
-  frost: ["freezing"],
   fog: ["cool"],
   lightning: ["overcast"],
 };
@@ -55,7 +49,6 @@ const excludes: { [K in Water]?: WeatherValue[] } = {
   "heavy snowfall": ["clear", "light clouds"],
   lightning: ["calm", "freezing", "hot"],
   fog: ["breeze", "gale", "heavy rain"],
-  humid: ["gale"],
 };
 
 const exclusive: Water[] = ["dry", "light snowfall", "heavy snowfall"];
