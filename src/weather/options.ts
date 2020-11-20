@@ -42,16 +42,16 @@ const requires: { [K in Water]?: WeatherValue[] } = {
 };
 
 const excludes: { [K in Water]?: WeatherValue[] } = {
-  "light rain": ["clear", "freezing", "heavy rain"],
+  "light rain": ["clear", "gale", "freezing", "heavy rain"],
   "heavy rain": ["hot", "clear", "freezing"],
   hail: ["clear"],
-  "light snowfall": ["clear"],
-  "heavy snowfall": ["clear", "light clouds"],
+  "light snowfall": ["clear", "gale"],
+  "heavy snowfall": ["clear", "calm", "light clouds"],
   lightning: ["calm", "freezing", "hot"],
   fog: ["breeze", "gale", "heavy rain"],
 };
 
-const exclusive: Water[] = ["dry", "light snowfall", "heavy snowfall"];
+const exclusive: Water[] = ["dry", "hail", "light snowfall", "heavy snowfall"];
 
 export type Weather = {
   temperature: Temperature;

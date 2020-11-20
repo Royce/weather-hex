@@ -126,8 +126,6 @@ test("restrict available sky/wind (light snow)", () => {
       "breeze, overcast",
       "calm, light clouds",
       "calm, overcast",
-      "gale, light clouds",
-      "gale, overcast",
     ]
   `);
 });
