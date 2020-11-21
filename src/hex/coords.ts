@@ -1,5 +1,5 @@
-type CubeCoord = [number, number, number];
-type CartesianCoord = [number, number];
+export type CubeCoord = [number, number, number];
+export type CartesianCoord = [number, number];
 
 export function cubeCoordToPixel(
   [x, y, z]: CubeCoord,

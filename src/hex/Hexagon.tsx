@@ -1,8 +1,8 @@
 import React from "react";
 
-export type cxcyr = { cx: number; cy: number; r: number };
+export type CenterAndRadius = { cx: number; cy: number; r: number };
 
-export function hexPointsString({ cx, cy, r }: cxcyr) {
+export function hexPointsString({ cx, cy, r }: CenterAndRadius) {
   var points: string[] = [];
 
   for (var theta = 0; theta < Math.PI * 2; theta += Math.PI / 3) {
@@ -17,11 +17,11 @@ export function hexPointsString({ cx, cy, r }: cxcyr) {
 }
 
 export function Hexagon(
-  props: Pick<
-    React.SVGAttributes<SVGCircleElement>,
-    "stroke" | "strokeWidth" | "fillOpacity"
-  > &
-    cxcyr
+  props: CenterAndRadius &
+    Pick<
+      React.SVGAttributes<SVGPolygonElement>,
+      "stroke" | "strokeWidth" | "fillOpacity" | "onClick"
+    >
 ) {
   return <polygon points={hexPointsString(props)} {...props} />;
 }

@@ -1,24 +1,23 @@
 import React, { useState } from "react";
 import { RecoilRoot } from "recoil";
-import { WiDaySunnyOvercast } from "react-icons/wi";
 
 import "./App.css";
-import { Tile } from "./hex/Tile";
-import { cubeCoordToPixel, neighbors, ring } from "./hex/coords";
+import { IconTile } from "./weather/IconTile";
+import { neighbors, ring, CubeCoord } from "./hex/coords";
 import Picker from "./weather/Picker";
 import { Weather } from "./weather/options";
 
+const origin: CubeCoord = [0, 0, 0];
+const cells = [origin, ...neighbors(origin), ...ring(origin, 2)];
+
 function App() {
   const scale = 40;
-  const origin: [number, number, number] = [0, 0, 0];
-  const cells = [origin, ...neighbors(origin), ...ring(origin, 2)];
 
   const [weather, setWeather] = useState<Partial<Weather>>({});
+  const [selected, setSelected] = useState<CubeCoord | null>(null);
 
   return (
     <RecoilRoot>
-      <Picker weather={weather} setWeather={setWeather} />
-
       <svg
         width={400}
         height={400}
@@ -26,14 +25,20 @@ function App() {
         style={{ border: "1px solid black" }}
       >
         {cells.map((coord) => {
-          const [cx, cy] = cubeCoordToPixel(coord, scale);
           return (
-            <Tile key={coord.toString()} cx={cx} cy={cy} r={scale - 2}>
-              <WiDaySunnyOvercast size={scale - 2} />
-            </Tile>
+            <IconTile
+              key={coord.toString()}
+              coord={coord}
+              weather={weather}
+              highlight={coord === selected}
+              scale={scale}
+              onClick={() => setSelected(coord)}
+            />
           );
         })}
       </svg>
+
+      {selected && <Picker weather={weather} setWeather={setWeather} />}
     </RecoilRoot>
   );
 }
