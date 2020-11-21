@@ -24,7 +24,7 @@ type IconProps = {
 };
 export default function Icon({ weather, size }: IconProps) {
   if (!weather.water || weather.water.length === 0)
-    return <BsFillQuestionDiamondFill size={size * 0.8} />;
+    return <BsFillQuestionDiamondFill size={size} />;
 
   if (weather.water.length === 1 && weather.water[0] === "dry") {
     if (weather.sky === "clear") {
@@ -127,5 +127,5 @@ export default function Icon({ weather, size }: IconProps) {
     }
   }
 
-  return <BsFillQuestionDiamondFill size={size * 0.8} />;
+  return <BsFillQuestionDiamondFill size={size} />;
 }
