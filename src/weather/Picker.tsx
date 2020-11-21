@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import {
   availableSkyAndWind,
   availableTemperatures,
@@ -33,7 +33,7 @@ export default function Picker({ weather, setWeather }: PickerProps) {
           water: undefined,
         });
     },
-    [setWeather, weather]
+    [setWeather, weather, temperatures]
   );
 
   const skyWindOptions = availableSkyAndWind(weather);
