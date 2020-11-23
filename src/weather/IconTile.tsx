@@ -2,6 +2,7 @@ import React from "react";
 
 import Icon from "./Icon";
 import { Weather } from "./options";
+import { temperatureColor } from "./temperatureColor";
 
 import { cubeCoordToPixel, CubeCoord } from "../hex/coords";
 import { Hexagon } from "../hex/Hexagon";
@@ -35,7 +36,8 @@ export function IconTile({
         r={r}
         strokeWidth={highlight ? "2px" : "1px"}
         stroke={highlight ? "black" : "grey"}
-        fillOpacity={0}
+        fillOpacity={0.1}
+        fill={temperatureColor(weather)}
         onClick={onClick}
       />
     </React.Fragment>

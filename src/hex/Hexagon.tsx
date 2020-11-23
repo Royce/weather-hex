@@ -20,7 +20,7 @@ export function Hexagon(
   props: CenterAndRadius &
     Pick<
       React.SVGAttributes<SVGPolygonElement>,
-      "stroke" | "strokeWidth" | "fillOpacity" | "onClick"
+      "stroke" | "strokeWidth" | "fill" | "fillOpacity" | "onClick"
     >
 ) {
   return <polygon points={hexPointsString(props)} {...props} />;
