@@ -3,13 +3,18 @@ import _ from "lodash";
 import { uniquePairs } from "./uniquePairs";
 
 export type Temperature = "hot" | "warm" | "cool" | "freezing";
-const temperatureScale: Temperature[] = ["hot", "warm", "cool", "freezing"];
+export const temperatureScale: Temperature[] = [
+  "hot",
+  "warm",
+  "cool",
+  "freezing",
+];
 
 export type Wind = "calm" | "breeze" | "gale";
-const windScale: Wind[] = ["calm", "breeze", "gale"];
+export const windScale: Wind[] = ["calm", "breeze", "gale"];
 
 export type Sky = "overcast" | "light clouds" | "clear";
-const skyScale: Sky[] = ["overcast", "light clouds", "clear"];
+export const skyScale: Sky[] = ["overcast", "light clouds", "clear"];
 
 export type Water =
   | "light rain"
@@ -20,7 +25,7 @@ export type Water =
   | "lightning"
   | "fog"
   | "dry";
-const waterList: Water[] = [
+export const waterList: Water[] = [
   "light rain",
   "heavy rain",
   "hail",
@@ -60,12 +65,21 @@ export type Weather = {
   water: Water[];
 };
 
-function ok({ temperature, wind, sky, water: waterList }: Weather): boolean {
+export function ok(
+  { temperature, wind, sky, water: waterList }: Weather,
+  { skipWaterExclusiveTest = true }: { skipWaterExclusiveTest?: boolean } = {}
+): boolean {
   const matches = (test: WeatherValue) =>
     test === temperature ||
     test === wind ||
     test === sky ||
     _.includes(waterList, test);
+
+  // Make sure water pairs do not contain items from the exclusive list
+  if (!skipWaterExclusiveTest && waterList.length == 2) {
+    if (exclusive.includes(waterList[0]) || exclusive.includes(waterList[0]))
+      return false;
+  }
 
   return _.every(waterList, (water) => {
     return (
