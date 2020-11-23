@@ -76,7 +76,7 @@ export function ok(
     _.includes(waterList, test);
 
   // Make sure water pairs do not contain items from the exclusive list
-  if (!skipWaterExclusiveTest && waterList.length == 2) {
+  if (!skipWaterExclusiveTest && waterList.length === 2) {
     if (exclusive.includes(waterList[0]) || exclusive.includes(waterList[0]))
       return false;
   }
