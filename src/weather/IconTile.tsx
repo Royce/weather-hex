@@ -26,6 +26,9 @@ export function IconTile({
 
   return (
     <React.Fragment>
+      <g transform={`translate(${cx - r / 2},${cy - r / 2})`}>
+        <Icon weather={weather} size={r} />
+      </g>
       <Hexagon
         cx={cx}
         cy={cy}
@@ -35,9 +38,6 @@ export function IconTile({
         fillOpacity={0}
         onClick={onClick}
       />
-      <g transform={`translate(${cx - r / 2},${cy - r / 2})`}>
-        <Icon weather={weather} size={r} />
-      </g>
     </React.Fragment>
   );
 }
