@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 
 import Icon from "./Icon";
 import { Weather } from "./options";
@@ -25,6 +25,14 @@ export function IconTile({
   const [cx, cy] = cubeCoordToPixel(coord, scale);
   const r = scale - 2;
 
+  const onClickPreventDefault = useCallback(
+    (e: { preventDefault(): void }) => {
+      onClick();
+      e.preventDefault();
+    },
+    [onClick]
+  );
+
   return (
     <React.Fragment>
       <g transform={`translate(${cx - r / 2},${cy - r / 2})`}>
@@ -38,7 +46,7 @@ export function IconTile({
         stroke={highlight ? "black" : "grey"}
         fillOpacity={0.1}
         fill={temperatureColor(weather)}
-        onClick={onClick}
+        onClick={onClickPreventDefault}
       />
     </React.Fragment>
   );

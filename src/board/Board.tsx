@@ -1,5 +1,11 @@
 import React from "react";
-import { atom, atomFamily, useRecoilState, useRecoilValue } from "recoil";
+import {
+  atom,
+  atomFamily,
+  useRecoilState,
+  useRecoilValue,
+  useSetRecoilState,
+} from "recoil";
 
 import { IconTile } from "../weather/IconTile";
 import { neighbors, ring, CubeCoord } from "../hex/coords";
@@ -35,6 +41,8 @@ function Cell({ coord, scale }: { coord: CubeCoord; scale: number }) {
 }
 
 function Board({ scale }: { scale: number }) {
+  const setSelected = useSetRecoilState(selectedState);
+
   const width = scale * 10;
 
   return (
@@ -44,6 +52,15 @@ function Board({ scale }: { scale: number }) {
       viewBox={[-width / 2, -width / 2, width, width].join(" ")}
       style={{ border: "1px solid black" }}
     >
+      <rect
+        width={width}
+        height={width}
+        fill={"white"}
+        x={-width / 2}
+        y={-width / 2}
+        onClick={() => setSelected(null)}
+      />
+
       {cells.map((coord) => (
         <Cell key={coord.join(",")} coord={coord} scale={scale} />
       ))}
