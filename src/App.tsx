@@ -1,44 +1,28 @@
-import React, { useState } from "react";
-import { RecoilRoot } from "recoil";
+import React from "react";
+import { RecoilRoot, useRecoilState, useRecoilValue } from "recoil";
 
 import "./App.css";
-import { IconTile } from "./weather/IconTile";
-import { neighbors, ring, CubeCoord } from "./hex/coords";
 import Picker from "./weather/Picker";
-import { Weather } from "./weather/options";
+import Board, { selectedState, cellState } from "./board/Board";
 
-const origin: CubeCoord = [0, 0, 0];
-const cells = [origin, ...neighbors(origin), ...ring(origin, 2)];
-
-function App() {
-  const scale = 40;
-
-  const [weather, setWeather] = useState<Partial<Weather>>({});
-  const [selected, setSelected] = useState<CubeCoord | null>(null);
+function PickerForSelectedCell() {
+  const selected = useRecoilValue(selectedState);
+  const [weather, setWeather] = useRecoilState(
+    cellState(selected || [NaN, NaN, NaN])
+  );
 
   return (
-    <RecoilRoot>
-      <svg
-        width={400}
-        height={400}
-        viewBox="-200 -200 400 400"
-        style={{ border: "1px solid black" }}
-      >
-        {cells.map((coord) => {
-          return (
-            <IconTile
-              key={coord.toString()}
-              coord={coord}
-              weather={weather}
-              highlight={coord === selected}
-              scale={scale}
-              onClick={() => setSelected(coord)}
-            />
-          );
-        })}
-      </svg>
-
+    <React.Fragment>
       {selected && <Picker weather={weather} setWeather={setWeather} />}
+    </React.Fragment>
+  );
+}
+
+function App() {
+  return (
+    <RecoilRoot>
+      <Board scale={40} />
+      <PickerForSelectedCell />
     </RecoilRoot>
   );
 }
