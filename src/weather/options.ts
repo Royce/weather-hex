@@ -48,7 +48,7 @@ const requires: { [K in Water]?: WeatherValue[] } = {
 
 const excludes: { [K in Water]?: WeatherValue[] } = {
   "light rain": ["clear", "gale", "freezing", "heavy rain"],
-  "heavy rain": ["hot", "clear", "freezing"],
+  "heavy rain": ["clear", "freezing"],
   hail: ["clear"],
   "light snowfall": ["clear", "gale"],
   "heavy snowfall": ["clear", "calm", "light clouds"],

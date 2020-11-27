@@ -62,6 +62,7 @@ test("restrict available water (hot)", () => {
   expect(available).toMatchInlineSnapshot(`
     Array [
       "dry",
+      "heavy rain",
       "light rain",
     ]
   `);
