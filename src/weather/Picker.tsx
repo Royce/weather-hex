@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  ok,
   availableSkyAndWind,
   availableTemperatures,
   availableWater,
@@ -12,75 +13,89 @@ import {
 
 const allTemperatures = availableTemperatures();
 
+function validWeather(w: Partial<Weather>): boolean {
+  return (
+    (w.sky && w.temperature && w.water && w.wind) !== undefined &&
+    ok(w as Weather)
+  );
+}
+
 type PickerProps = {
   weather: Weather | null;
   setWeather: (weather: Weather) => void;
 };
 export default function Picker({ weather, setWeather }: PickerProps) {
-  const [localWeather, _setLocalWeather] = useState<Partial<Weather>>(
-    weather || {}
+  const [local, setLocal] = useState<Partial<Weather>>({});
+  const combinedWeather: Partial<Weather> = useMemo(
+    () => ({ ...weather, ...local }),
+    [weather, local]
   );
 
   useEffect(() => {
-    _setLocalWeather(weather || {});
+    return () => setLocal({});
   }, [weather]);
 
-  const setLocalWeather = useCallback(
-    (w: Partial<Weather>) => {
-      _setLocalWeather(w);
-      if (w.sky && w.temperature && w.wind && w.water && w.water.length >= 1)
-        setWeather(w as Weather);
-    },
-    [_setLocalWeather, setWeather]
-  );
+  const temperatures = availableTemperatures(combinedWeather);
 
-  const temperatures = availableTemperatures(localWeather);
   const setTemperature = useCallback(
     (event: React.ChangeEvent<HTMLSelectElement>) => {
       const temperature = event.target.value as Temperature;
-      if (temperatures.includes(temperature))
-        setLocalWeather({
-          ...localWeather,
-          temperature,
-        });
-      else
-        setLocalWeather({
-          ...localWeather,
-          temperature,
-          water: undefined,
-        });
+      const w: Partial<Weather> = { ...combinedWeather, temperature };
+      if (validWeather(w)) {
+        setLocal({});
+        setWeather(w as Weather);
+      } else {
+        if (temperatures.includes(temperature)) {
+          setLocal({ ...local, temperature });
+        } else {
+          setLocal({ ...local, temperature, water: undefined });
+        }
+      }
     },
-    [setLocalWeather, localWeather, temperatures]
+    [local, setLocal, combinedWeather, setWeather, temperatures]
   );
 
-  const skyWindOptions = availableSkyAndWind(localWeather);
   const setSkyWindOptions = useCallback(
     (event: React.ChangeEvent<HTMLSelectElement>) => {
       const [sky, wind] = event.target.value.split(",") as [Sky, Wind];
-      setLocalWeather({ ...localWeather, sky, wind });
+      const w: Partial<Weather> = { ...combinedWeather, sky, wind };
+      if (validWeather(w)) {
+        setLocal({});
+        setWeather(w as Weather);
+      } else {
+        setLocal({ ...local, sky, wind });
+      }
     },
-    [setLocalWeather, localWeather]
+    [local, setLocal, combinedWeather, setWeather]
   );
 
-  const waterOptions =
-    localWeather.temperature || localWeather.sky
-      ? availableWater(localWeather)
-      : [];
   const setWater = useCallback(
     (event: React.ChangeEvent<HTMLSelectElement>) => {
       const water = event.target.value.split(",") as Water[];
-      setLocalWeather({
-        ...localWeather,
-        water,
-      });
+      const w: Partial<Weather> = { ...combinedWeather, water };
+      if (validWeather(w)) {
+        setLocal({});
+        setWeather(w as Weather);
+      } else {
+        setLocal({ ...local, water });
+      }
     },
-    [setLocalWeather, localWeather]
+    [local, setLocal, combinedWeather, setWeather]
   );
+
+  const skyWindOptions = availableSkyAndWind(combinedWeather);
+  const waterOptions =
+    combinedWeather.temperature || combinedWeather.sky
+      ? availableWater(combinedWeather)
+      : [];
 
   return (
     <div>
-      <select value={localWeather.temperature || ""} onChange={setTemperature}>
-        {!localWeather.temperature && <option value="">Temperature</option>}
+      <select
+        value={combinedWeather.temperature || ""}
+        onChange={setTemperature}
+      >
+        {!combinedWeather.temperature && <option value="">Temperature</option>}
         {allTemperatures.map((t) => (
           <option key={t} value={t}>
             {temperatures.includes(t) ? t : `(invalid) ${t}`}
@@ -88,10 +103,10 @@ export default function Picker({ weather, setWeather }: PickerProps) {
         ))}
       </select>
       <select
-        value={`${localWeather.sky},${localWeather.wind}`}
+        value={`${combinedWeather.sky},${combinedWeather.wind}`}
         onChange={setSkyWindOptions}
       >
-        {!(localWeather.sky && localWeather.wind) && (
+        {!(combinedWeather.sky && combinedWeather.wind) && (
           <option>Sky / Wind</option>
         )}
         {skyWindOptions.map(({ sky, wind }) => (
@@ -101,10 +116,10 @@ export default function Picker({ weather, setWeather }: PickerProps) {
         ))}
       </select>
       <select
-        value={localWeather.water && localWeather.water.join(",")}
+        value={combinedWeather.water && combinedWeather.water.join(",")}
         onChange={setWater}
       >
-        {!localWeather.water && <option>Water</option>}
+        {!combinedWeather.water && <option>Water</option>}
         {waterOptions.map((water) => (
           <option key={water.join(",")} value={water.join(",")}>
             {water.join(", ")}
@@ -112,8 +127,9 @@ export default function Picker({ weather, setWeather }: PickerProps) {
         ))}
       </select>
       <br />
-      {localWeather.temperature}, {localWeather.sky}, {localWeather.wind},
-      {localWeather.water && localWeather.water.join(", ")}
+      {combinedWeather.temperature}, {combinedWeather.sky},{" "}
+      {combinedWeather.wind},
+      {combinedWeather.water && combinedWeather.water.join(", ")}
     </div>
   );
 }
