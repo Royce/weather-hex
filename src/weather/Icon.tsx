@@ -19,11 +19,11 @@ import {
 } from "./CustomIcons";
 
 type IconProps = {
-  weather: Partial<Weather>;
+  weather: Weather | null;
   size: number;
 };
 export default function Icon({ weather, size }: IconProps) {
-  if (!weather.water || weather.water.length === 0)
+  if (!weather || weather.water.length === 0)
     return <BsFillQuestionDiamondFill size={size} />;
 
   if (weather.water.length === 1 && weather.water[0] === "dry") {

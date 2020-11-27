@@ -6,8 +6,7 @@ import Icon from "./Icon";
 
 export function IconGrid() {
   const list = _.chain(all())
-    .map((w) => _.omit(w, "temperature"))
-    .uniqWith(_.isEqual)
+    .uniqBy(({ sky, wind, water }) => [sky, wind, ...water].join(" "))
     .value();
 
   return (

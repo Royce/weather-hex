@@ -19,9 +19,9 @@ export const selectedState = atom<CubeCoord | null>({
   default: null,
 });
 
-export const cellState = atomFamily<Partial<Weather>, CubeCoord>({
+export const cellState = atomFamily<Weather | null, CubeCoord>({
   key: "_cell",
-  default: (coord) => ({}),
+  default: (coord) => null,
 });
 
 function Cell({ coord, scale }: { coord: CubeCoord; scale: number }) {

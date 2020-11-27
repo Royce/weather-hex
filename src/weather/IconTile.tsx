@@ -9,7 +9,7 @@ import { Hexagon } from "../hex/Hexagon";
 
 type TileProps = {
   coord: CubeCoord;
-  weather: Partial<Weather>;
+  weather: Weather | null;
   highlight: boolean;
   scale: number;
   onClick: () => void;

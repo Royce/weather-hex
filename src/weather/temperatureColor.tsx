@@ -1,7 +1,9 @@
 import { Weather } from "./options";
 
-export function temperatureColor({ temperature }: Partial<Weather>) {
-  switch (temperature) {
+export function temperatureColor(weather: Weather | null) {
+  if (!weather) return "lightgrey";
+
+  switch (weather.temperature) {
     case "hot":
       return "red";
     case "warm":
@@ -10,7 +12,5 @@ export function temperatureColor({ temperature }: Partial<Weather>) {
       return "green";
     case "freezing":
       return "aqua";
-    default:
-      return "lightgrey";
   }
 }
