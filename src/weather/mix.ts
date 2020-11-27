@@ -29,11 +29,11 @@ export function mixes(a: Weather, b: Weather): Weather[] {
     for (const wind of winds) {
       for (const sky of skies) {
         for (const water of waterList) {
-          const weather = { temperature, wind, sky, water: [water] };
+          const weather: Weather = { temperature, wind, sky, water: [water] };
           if (ok(weather)) list.push(weather);
         }
         for (const waterPair of uniquePairs(waterList)) {
-          const weather = { temperature, wind, sky, water: waterPair };
+          const weather: Weather = { temperature, wind, sky, water: waterPair };
           if (ok(weather, { skipWaterExclusiveTest: false }))
             list.push(weather);
         }

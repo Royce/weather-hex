@@ -25,6 +25,7 @@ export type Water =
   | "lightning"
   | "fog"
   | "dry";
+export type WaterGroup = [Water] | [Water, Water];
 export const waterList: Water[] = [
   "light rain",
   "heavy rain",
@@ -62,7 +63,7 @@ export type Weather = {
   temperature: Temperature;
   wind: Wind;
   sky: Sky;
-  water: Water[];
+  water: WaterGroup;
 };
 
 export function ok(
@@ -102,15 +103,15 @@ function _all(constraints?: Partial<Omit<Weather, "water">>) {
     for (const wind of winds) {
       for (const sky of skies) {
         for (const water of exclusive) {
-          const weather = { temperature, wind, sky, water: [water] };
+          const weather: Weather = { temperature, wind, sky, water: [water] };
           if (ok(weather)) list.push(weather);
         }
         for (const water of _.without(waterList, ...exclusive)) {
-          const weather = { temperature, wind, sky, water: [water] };
+          const weather: Weather = { temperature, wind, sky, water: [water] };
           if (ok(weather)) list.push(weather);
         }
         for (const water of uniquePairs(_.without(waterList, ...exclusive))) {
-          const weather = { temperature, wind, sky, water };
+          const weather: Weather = { temperature, wind, sky, water };
           if (ok(weather)) list.push(weather);
         }
       }

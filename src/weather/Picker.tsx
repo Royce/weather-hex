@@ -9,6 +9,7 @@ import {
   Water,
   Weather,
   Wind,
+  WaterGroup,
 } from "./options";
 
 const allTemperatures = availableTemperatures();
@@ -71,7 +72,7 @@ export default function Picker({ weather, setWeather }: PickerProps) {
 
   const setWater = useCallback(
     (event: React.ChangeEvent<HTMLSelectElement>) => {
-      const water = event.target.value.split(",") as Water[];
+      const water = event.target.value.split(",") as WaterGroup;
       const w: Partial<Weather> = { ...combinedWeather, water };
       if (validWeather(w)) {
         setLocal({});
