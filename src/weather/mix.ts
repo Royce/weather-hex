@@ -11,7 +11,7 @@ import { uniquePairs } from "./uniquePairs";
 
 export function mix(a: Weather, b: Weather): Weather {
   const options = mixes(a, b);
-  return _.shuffle(options)[0];
+  return _.sample(options) as Weather;
 }
 
 export function mixes(a: Weather, b: Weather): Weather[] {
