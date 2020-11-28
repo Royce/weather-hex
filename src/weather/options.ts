@@ -149,5 +149,6 @@ export function availableSkyAndWind(constraints: Partial<Weather> = {}) {
     })
     .map(({ sky, wind }) => ({ sky, wind }))
     .uniqWith(_.isEqual)
+    .sortBy(({ sky, wind }) => `${sky} ${wind}`)
     .value();
 }

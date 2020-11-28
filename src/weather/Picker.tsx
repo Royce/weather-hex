@@ -84,7 +84,10 @@ export default function Picker({ weather, setWeather }: PickerProps) {
   );
 
   const skyWindOptions = availableSkyAndWind(combinedWeather).filter(
-    ({ sky }) => sky !== "light clouds" // Too boring.
+    ({ sky, wind }) =>
+      (wind === "calm" && sky !== "overcast") ||
+      (wind === "breeze" && sky !== "clear") ||
+      (wind === "gale" && sky === "overcast")
   );
 
   const waterOptions =
