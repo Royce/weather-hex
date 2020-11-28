@@ -17,7 +17,8 @@ test("mix to: heavy rain, lightning: warm, breeze, overcast", () => {
         "sky": "overcast",
         "temperature": "warm",
         "water": Array [
-          "dry",
+          "heavy rain",
+          "lightning",
         ],
         "wind": "breeze",
       },
@@ -33,6 +34,7 @@ test("mix to: heavy rain, lightning: warm, breeze, overcast", () => {
         "sky": "overcast",
         "temperature": "warm",
         "water": Array [
+          "light rain",
           "lightning",
         ],
         "wind": "breeze",
@@ -41,8 +43,7 @@ test("mix to: heavy rain, lightning: warm, breeze, overcast", () => {
         "sky": "overcast",
         "temperature": "warm",
         "water": Array [
-          "heavy rain",
-          "lightning",
+          "light rain",
         ],
         "wind": "breeze",
       },

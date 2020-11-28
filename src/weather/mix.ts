@@ -6,16 +6,57 @@ import {
   Water,
   Weather,
   windScale,
+  waterList,
+  WaterGroup,
 } from "./options";
-import { uniquePairs } from "./uniquePairs";
 
 export function mix(a: Weather, b: Weather): Weather {
   const options = mixes(a, b);
   return _.sample(options) as Weather;
 }
 
+const adjacentWater: { [K in Water]?: Water[] } = {
+  "heavy rain": ["heavy rain", "light rain"],
+  "light rain": _.without(waterList, "heavy snowfall", "light snowfall"),
+  "heavy snowfall": ["heavy snowfall", "light snowfall"],
+  "light snowfall": _.without(waterList, "heavy rain", "light rain"),
+  dry: _.without(waterList, "heavy snowfall", "heavy rain"),
+  lightning: ["lightning", "dry"],
+  hail: ["hail", "dry"],
+  fog: ["fog", "dry"],
+};
+
 export function mixes(a: Weather, b: Weather): Weather[] {
-  const waterList: Water[] = _.uniq(["dry", ...a.water, ...b.water]);
+  var x: [Water, Water][] = [];
+
+  const [a1, a2] = a.water.map((w) => adjacentWater[w] || waterList);
+  const [b1, b2] = b.water.map((w) => adjacentWater[w] || waterList);
+
+  for (const w1 of _.intersection(a1, b1)) {
+    for (const w2 of a2 && b2 ? _.intersection(a2, b2) : a2 || b2 || ["dry"]) {
+      x.push(_.sortBy([w1, w2]) as [Water, Water]);
+    }
+  }
+
+  for (const w1 of b2 ? _.intersection(a1, b2) : a1) {
+    for (const w2 of a2 ? _.intersection(a2, b1) : b1) {
+      x.push(_.sortBy([w1, w2]) as [Water, Water]);
+    }
+  }
+
+  const waterPairs = _.chain(x)
+    .map<WaterGroup>(([item1, item2]) =>
+      item1 === "dry" && item2
+        ? [item2]
+        : item2 === "dry"
+        ? [item1]
+        : item1 === item2
+        ? [item1]
+        : [item1, item2]
+    )
+    .uniqWith(_.isEqual)
+    .value();
+
   const temperatures = mixUsingScale(
     a.temperature,
     b.temperature,
@@ -28,12 +69,8 @@ export function mixes(a: Weather, b: Weather): Weather[] {
   for (const temperature of temperatures) {
     for (const wind of winds) {
       for (const sky of skies) {
-        for (const water of waterList) {
-          const weather: Weather = { temperature, wind, sky, water: [water] };
-          if (ok(weather)) list.push(weather);
-        }
-        for (const waterPair of uniquePairs(waterList)) {
-          const weather: Weather = { temperature, wind, sky, water: waterPair };
+        for (const water of waterPairs) {
+          const weather: Weather = { temperature, wind, sky, water };
           if (ok(weather, { skipWaterExclusiveTest: false }))
             list.push(weather);
         }
