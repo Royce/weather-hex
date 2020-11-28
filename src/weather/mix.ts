@@ -99,7 +99,18 @@ export function mixes(a: Weather, b: Weather): Weather[] {
     for (const wind of winds) {
       for (const sky of skies) {
         for (const water of waterPairs) {
-          const weather: Weather = { temperature, wind, sky, water };
+          // Sometimes water is between dry and heavy rain (i.e. light rain)
+          // but wind is limited to gale. This combo is not allowed in options.ts
+          // Nudge wind towards breeze.
+          const fixWind =
+            _.isEqual(winds, ["gale"]) && water.includes("light rain") && _;
+
+          const weather: Weather = {
+            temperature,
+            wind: fixWind ? "breeze" : wind,
+            sky,
+            water,
+          };
           if (ok(weather, { skipWaterExclusiveTest: false }))
             list.push(weather);
         }

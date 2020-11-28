@@ -95,3 +95,30 @@ test("lightning storm  mix  clear skies", () => {
     ]
   `);
 });
+
+test("lightning + heavy rain", () => {
+  const result = mixes(
+    {
+      temperature: "cool",
+      sky: "overcast",
+      wind: "gale",
+      water: ["lightning"],
+    },
+    {
+      temperature: "cool",
+      sky: "overcast",
+      wind: "gale",
+      water: ["heavy rain"],
+    }
+  );
+
+  // Expect that it will be light rain.
+  // Note that it has used breeze instead of gale.
+  // This is a special case for light rain.
+  expect(result.map(description)).toMatchInlineSnapshot(`
+    Array [
+      "light rain, lightning: cool, breeze, overcast",
+      "light rain: cool, breeze, overcast",
+    ]
+  `);
+});
