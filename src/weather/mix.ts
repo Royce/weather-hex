@@ -43,7 +43,7 @@ function expandWaterCombo([w1, w2]: Pair<Water | undefined>) {
       ? ["dry", "light rain", "light snowfall"]
       : _.intersection(adjacentWater[w1 || "dry"], adjacentWater[w2 || "dry"]);
 
-  console.log(`**${i + 1000}`, [w1, w2], list);
+  // console.log(`**${i + 1000}`, [w1, w2], list);
   return list;
 }
 
@@ -71,7 +71,7 @@ export function mixes(a: Weather, b: Weather): Weather[] {
     }
   }
 
-  console.log(`**${i + 1000}`, x);
+  // console.log(`**${i + 1000} results:`, x);
 
   const waterPairs = _.chain(x)
     .map<WaterGroup>(([item1, item2]) =>
@@ -85,6 +85,8 @@ export function mixes(a: Weather, b: Weather): Weather[] {
     )
     .uniqWith(_.isEqual)
     .value();
+
+  // console.log(`**${i + 1000} after filter:`, waterPairs);
 
   const temperatures = mixUsingScale(
     a.temperature,
