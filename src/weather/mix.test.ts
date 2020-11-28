@@ -1,4 +1,8 @@
 import { mixes } from "./mix";
+import { Weather } from "./options";
+
+const description = ({ temperature, wind, sky, water }: Weather) =>
+  `${water.join(", ")}: ${temperature}, ${wind}, ${sky}`;
 
 test("mix to: heavy rain, lightning: warm, breeze, overcast", () => {
   const result = mixes(
@@ -11,42 +15,12 @@ test("mix to: heavy rain, lightning: warm, breeze, overcast", () => {
     { temperature: "cool", sky: "overcast", wind: "gale", water: ["lightning"] }
   );
 
-  expect(result).toMatchInlineSnapshot(`
+  expect(result.map(description)).toMatchInlineSnapshot(`
     Array [
-      Object {
-        "sky": "overcast",
-        "temperature": "warm",
-        "water": Array [
-          "heavy rain",
-          "lightning",
-        ],
-        "wind": "breeze",
-      },
-      Object {
-        "sky": "overcast",
-        "temperature": "warm",
-        "water": Array [
-          "heavy rain",
-        ],
-        "wind": "breeze",
-      },
-      Object {
-        "sky": "overcast",
-        "temperature": "warm",
-        "water": Array [
-          "light rain",
-          "lightning",
-        ],
-        "wind": "breeze",
-      },
-      Object {
-        "sky": "overcast",
-        "temperature": "warm",
-        "water": Array [
-          "light rain",
-        ],
-        "wind": "breeze",
-      },
+      "heavy rain, lightning: warm, breeze, overcast",
+      "heavy rain: warm, breeze, overcast",
+      "light rain, lightning: warm, breeze, overcast",
+      "light rain: warm, breeze, overcast",
     ]
   `);
 });
