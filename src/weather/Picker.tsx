@@ -83,7 +83,10 @@ export default function Picker({ weather, setWeather }: PickerProps) {
     [local, setLocal, combinedWeather, setWeather]
   );
 
-  const skyWindOptions = availableSkyAndWind(combinedWeather);
+  const skyWindOptions = availableSkyAndWind(combinedWeather).filter(
+    ({ sky }) => sky !== "light clouds" // Too boring.
+  );
+
   const waterOptions =
     combinedWeather.temperature || combinedWeather.sky
       ? availableWater(combinedWeather)
