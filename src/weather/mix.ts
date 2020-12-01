@@ -47,10 +47,7 @@ function expandWaterCombo([w1, w2]: Pair<Water | undefined>) {
   return list;
 }
 
-var i = 0;
 export function mixes(a: Weather, b: Weather): Weather[] {
-  i++;
-
   const combo: Pair<Pair<Water | undefined>>[] = [
     [
       [a.water[0], b.water[0]],
@@ -71,8 +68,6 @@ export function mixes(a: Weather, b: Weather): Weather[] {
     }
   }
 
-  // console.log(`**${i + 1000} results:`, x);
-
   const waterPairs = _.chain(x)
     .map<WaterGroup>(([item1, item2]) =>
       item1 === "dry" && item2
@@ -85,8 +80,6 @@ export function mixes(a: Weather, b: Weather): Weather[] {
     )
     .uniqWith(_.isEqual)
     .value();
-
-  // console.log(`**${i + 1000} after filter:`, waterPairs);
 
   const temperatures = mixUsingScale(
     a.temperature,
