@@ -1,44 +1,9 @@
 import React from "react";
-import {
-  atom,
-  atomFamily,
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-} from "recoil";
+import { useSetRecoilState } from "recoil";
 
-import { IconTile } from "../weather/IconTile";
-import { neighbors, ring, CubeCoord } from "../hex/coords";
-import { Weather } from "../weather/options";
-
-const origin: CubeCoord = [0, 0, 0];
-const cells = [origin, ...neighbors(origin), ...ring(origin, 2)];
-
-export const selectedState = atom<CubeCoord | null>({
-  key: "selected",
-  default: null,
-});
-
-export const cellState = atomFamily<Weather | null, CubeCoord>({
-  key: "_cell",
-  default: (coord) => null,
-});
-
-function Cell({ coord, scale }: { coord: CubeCoord; scale: number }) {
-  const [selected, setSelected] = useRecoilState(selectedState);
-  const weather = useRecoilValue(cellState(coord));
-
-  return (
-    <IconTile
-      key={coord.toString()}
-      coord={coord}
-      weather={weather}
-      highlight={coord === selected}
-      scale={scale}
-      onClick={() => setSelected(coord)}
-    />
-  );
-}
+import { Cell } from "./Cell";
+import { all } from "./cellCoords";
+import { selectedState } from "./selectedState";
 
 function Board({ scale }: { scale: number }) {
   const setSelected = useSetRecoilState(selectedState);
@@ -61,7 +26,7 @@ function Board({ scale }: { scale: number }) {
         onClick={() => setSelected(null)}
       />
 
-      {cells.map((coord) => (
+      {all.map((coord) => (
         <Cell key={coord.join(",")} coord={coord} scale={scale} />
       ))}
     </svg>
