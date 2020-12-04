@@ -1,5 +1,5 @@
 import React from "react";
-import _ from "lodash";
+import _ from "lodash/fp";
 import { useRecoilState, useRecoilValue } from "recoil";
 
 import { CubeCoord, neighbors } from "../hex/coords";
@@ -19,7 +19,7 @@ export function CellWeatherEditor() {
   return (
     <React.Fragment>
       {selected &&
-        (_.some(primaries, (c) => _.isEqual(c, selected)) ? (
+        (_.some((c) => _.isEqual(c, selected), primaries) ? (
           <PickerForSelected coord={selected} />
         ) : (
           <BlendResultsView coord={selected} />
@@ -36,9 +36,9 @@ function PickerForSelected({ coord }: { coord: CubeCoord }) {
 
 function BlendResultsView({ coord }: { coord: CubeCoord }) {
   const [left, right] = _.intersectionWith(
+    _.isEqual,
     neighbors(coord),
-    primaries,
-    _.isEqual
+    primaries
   ) as [CubeCoord, CubeCoord];
 
   const weather: [

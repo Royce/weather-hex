@@ -1,4 +1,4 @@
-import _ from "lodash";
+import _ from "lodash/fp";
 import {
   ok,
   skyScale,
@@ -17,15 +17,13 @@ export function mix(a: Weather, b: Weather): Weather {
 
 const adjacentWater: { [K in Water]: Water[] } = {
   "heavy rain": ["heavy rain", "light rain"],
-  "light rain": _.without(waterList, "heavy snowfall", "light snowfall"),
+  "light rain": _.without(["heavy snowfall", "light snowfall"], waterList),
   "heavy snowfall": ["heavy snowfall", "light snowfall"],
   "light snowfall": _.without(
-    waterList,
-    "heavy rain",
-    "light rain",
-    "lightning"
+    ["heavy rain", "light rain", "lightning"],
+    waterList
   ),
-  dry: _.without(waterList, "heavy snowfall", "heavy rain"),
+  dry: _.without(["heavy snowfall", "heavy rain"], waterList),
   lightning: ["lightning", "dry"],
   hail: ["hail", "dry"],
   fog: ["fog", "dry"],
@@ -63,13 +61,13 @@ export function mixes(a: Weather, b: Weather): Weather[] {
   for (const [p1, p2] of combo) {
     for (const w1 of expandWaterCombo(p1)) {
       for (const w2 of expandWaterCombo(p2)) {
-        x.push(_.sortBy([w1, w2]) as [Water, Water]);
+        x.push(_.sortBy(_.identity, [w1, w2]) as [Water, Water]);
       }
     }
   }
 
-  const waterPairs = _.chain(x)
-    .map<WaterGroup>(([item1, item2]) =>
+  const waterPairs: WaterGroup[] = _.flow(
+    _.map(([item1, item2]) =>
       item1 === "dry" && item2
         ? [item2]
         : item2 === "dry"
@@ -77,9 +75,9 @@ export function mixes(a: Weather, b: Weather): Weather[] {
         : item1 === item2
         ? [item1]
         : [item1, item2]
-    )
-    .uniqWith(_.isEqual)
-    .value();
+    ),
+    _.uniqWith(_.isEqual)
+  )(x);
 
   const temperatures = mixUsingScale(
     a.temperature,

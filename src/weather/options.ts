@@ -1,4 +1,4 @@
-import _ from "lodash";
+import _ from "lodash/fp";
 
 import { uniquePairs } from "./uniquePairs";
 
@@ -74,7 +74,7 @@ export function ok(
     test === temperature ||
     test === wind ||
     test === sky ||
-    _.includes(waterList, test);
+    _.includes(test, waterList);
 
   // Make sure water pairs do not contain items from the exclusive list
   if (!skipWaterExclusiveTest && waterList.length === 2) {
@@ -82,13 +82,13 @@ export function ok(
       return false;
   }
 
-  return _.every(waterList, (water) => {
+  return _.every((water) => {
     return (
       (excludes[water] === undefined ||
-        _.every(excludes[water], (t) => !matches(t))) &&
-      (requires[water] === undefined || _.some(requires[water], matches))
+        _.every((t) => !matches(t), excludes[water])) &&
+      (requires[water] === undefined || _.some(matches, requires[water]))
     );
-  });
+  }, waterList);
 }
 
 function _all(constraints?: Partial<Omit<Weather, "water">>) {
@@ -106,11 +106,11 @@ function _all(constraints?: Partial<Omit<Weather, "water">>) {
           const weather: Weather = { temperature, wind, sky, water: [water] };
           if (ok(weather)) list.push(weather);
         }
-        for (const water of _.without(waterList, ...exclusive)) {
+        for (const water of _.without(waterList, exclusive)) {
           const weather: Weather = { temperature, wind, sky, water: [water] };
           if (ok(weather)) list.push(weather);
         }
-        for (const water of uniquePairs(_.without(waterList, ...exclusive))) {
+        for (const water of uniquePairs(_.without(waterList, exclusive))) {
           const weather: Weather = { temperature, wind, sky, water };
           if (ok(weather)) list.push(weather);
         }
@@ -125,30 +125,37 @@ export function all() {
   return _all();
 }
 
-export function availableTemperatures(constraints: Partial<Weather> = {}) {
-  return _.chain(_all(_.omit(constraints, "temperature")))
-    .filter(({ water }) => {
+export function availableTemperatures(
+  constraints: Partial<Weather> = {}
+): Temperature[] {
+  return _.flow(
+    _.filter(({ water }) => {
       return !constraints.water || _.isEmpty(_.xor(water, constraints.water));
-    })
-    .map("temperature")
-    .uniq()
-    .value();
+    }),
+    _.map("temperature"),
+    _.uniq
+  )(_all(_.omit("temperature", constraints)));
 }
 
-export function availableWater(constraints: Partial<Weather> = {}) {
-  return _.chain(_all(_.omit(constraints, "water")))
-    .map("water")
-    .uniqWith(_.isEqual)
-    .value();
+export function availableWater(
+  constraints: Partial<Weather> = {}
+): WaterGroup[] {
+  return _.flow(
+    _.map("water"),
+    _.uniqWith(_.isEqual)
+  )(_all(_.omit("water", constraints)));
 }
 
-export function availableSkyAndWind(constraints: Partial<Weather> = {}) {
-  return _.chain(_all(_.omit(constraints, ["sky", "wind"])))
-    .filter(({ water }) => {
+type SkyWind = { sky: Sky; wind: Wind };
+export function availableSkyAndWind(
+  constraints: Partial<Weather> = {}
+): SkyWind[] {
+  return _.flow(
+    _.filter<Weather>(({ water }) => {
       return !constraints.water || _.isEmpty(_.xor(water, constraints.water));
-    })
-    .map(({ sky, wind }) => ({ sky, wind }))
-    .uniqWith(_.isEqual)
-    .sortBy(({ sky, wind }) => `${sky} ${wind}`)
-    .value();
+    }),
+    _.map<Weather, SkyWind>(({ sky, wind }: Weather) => ({ sky, wind })),
+    _.uniqWith<SkyWind>(_.isEqual),
+    _.sortBy(({ sky, wind }) => `${sky} ${wind}`)
+  )(_all(_.omit(["sky", "wind"], constraints)));
 }

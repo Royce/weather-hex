@@ -1,13 +1,14 @@
 import React from "react";
-import _ from "lodash";
+import _ from "lodash/fp";
 
-import { all } from "./options";
+import { all, Weather } from "./options";
 import Icon from "./Icon";
 
 export function IconGrid() {
-  const list = _.chain(all())
-    .uniqBy(({ sky, wind, water }) => [sky, wind, ...water].join(" "))
-    .value();
+  const list = _.uniqBy<Weather>(
+    ({ sky, wind, water }) => [sky, wind, ...water].join(" "),
+    all()
+  );
 
   return (
     <div
