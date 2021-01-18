@@ -1,7 +1,6 @@
 import React from "react";
 import { RecoilRoot } from "recoil";
 
-import "./App.css";
 import Board from "./board/Board";
 import { CellWeatherEditor } from "./board/CellWeatherEditor";
 
