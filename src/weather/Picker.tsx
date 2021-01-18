@@ -132,10 +132,6 @@ export default function Picker({ weather, setWeather }: PickerProps) {
           </option>
         ))}
       </select>
-      <br />
-      {combinedWeather.temperature}, {combinedWeather.sky},{" "}
-      {combinedWeather.wind},
-      {combinedWeather.water && combinedWeather.water.join(", ")}
     </div>
   );
 }

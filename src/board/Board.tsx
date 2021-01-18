@@ -15,7 +15,6 @@ function Board({ scale }: { scale: number }) {
       width={width}
       height={width}
       viewBox={[-width / 2, -width / 2, width, width].join(" ")}
-      style={{ border: "1px solid black" }}
     >
       <rect
         width={width}
